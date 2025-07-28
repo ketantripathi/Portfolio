@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 const AdminPanel = () => {
+  //eslint-disable-next-line
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 

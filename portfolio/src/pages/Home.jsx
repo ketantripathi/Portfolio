@@ -1,7 +1,6 @@
 // src/pages/Home.jsx
 import Hero from "../components/Hero";
 import About from "../components/About";
-import Skills from "../components/Skills";
 import TimeLine from "../components/TimeLine";
 import Expertise from "../components/Expertise";
 import Skill from "../components/Skill";
@@ -14,7 +13,6 @@ export default function Home({ navbarColor }) {
         <Hero />
         <About />
         <TimeLine/>
-        {/* <Skills /> */}
         <Expertise />
         <Skill />
         <Contact />

@@ -85,7 +85,7 @@ function Hero() {
           <img
             src={profile}
             alt="Profile"
-            className="relative w-64 h-64 object-cover rounded-full border-4 border-violet-500 shadow-2xl animate-float"
+            className="relative w-64 h-64 object-cover rounded-full border-4 border-violet-500 shadow-2xl animate-float" loading="lazy"
           />
         </div>
       </div>
