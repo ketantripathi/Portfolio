@@ -2,13 +2,16 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import projectsData from "../data/projectsData";
+import { useTheme } from "../components/ThemeContext"; // Import Theme Context
 
-const categories = ["All", "Web Development", "UI/UX", "Machine Learning","Logo Design"];
+const categories = ["All", "Web Development", "UI/UX", "Machine Learning", "Logo Design"];
 
 const Projects = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedProject, setSelectedProject] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const { darkMode } = useTheme(); // Access global darkMode
 
   // Auto-slide effect for carousel
   useEffect(() => {
@@ -27,9 +30,19 @@ const Projects = () => {
       : projectsData.filter((proj) => proj.category === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-black text-white py-16 px-6 md:px-20">
+    <div
+      className={`min-h-screen py-16 px-6 md:px-20 transition-colors duration-500 ${
+        darkMode ? "bg-black text-white" : "bg-green-50 text-gray-900"
+      }`}
+    >
       {/* Heading */}
-      <h1 className="text-5xl font-bold text-center mb-10 bg-gradient-to-r from-violet-500 to-blue-400 text-transparent bg-clip-text">
+      <h1
+        className={`text-5xl font-bold text-center mb-10 ${
+          darkMode
+            ? "bg-gradient-to-r from-violet-500 to-blue-400 text-transparent bg-clip-text"
+            : "bg-gradient-to-r from-green-500 to-blue-400 text-transparent bg-clip-text"
+        }`}
+      >
         My Projects
       </h1>
 
@@ -43,8 +56,12 @@ const Projects = () => {
             onClick={() => setSelectedCategory(cat)}
             className={`px-4 py-2 rounded-full border transition-colors duration-300 ${
               selectedCategory === cat
-                ? "bg-gradient-to-r from-violet-500 to-blue-500 border-transparent"
-                : "border-gray-500 hover:border-violet-400"
+                ? darkMode
+                  ? "bg-gradient-to-r from-violet-500 to-blue-500 border-transparent"
+                  : "bg-gradient-to-r from-green-500 to-blue-400 border-transparent"
+                : darkMode
+                ? "border-gray-500 hover:border-violet-400"
+                : "border-gray-400 hover:border-green-400"
             }`}
           >
             {cat}
@@ -66,17 +83,27 @@ const Projects = () => {
                 setSelectedProject(project);
                 setCurrentImageIndex(0); // reset carousel
               }}
-              className="cursor-pointer bg-gradient-to-br from-black via-gray-950 to-black p-5 rounded-2xl shadow-lg border border-violet-600 hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.6)] transition-shadow"
+              className={`cursor-pointer p-5 rounded-2xl shadow-lg border transition-shadow ${
+                darkMode
+                  ? "bg-gradient-to-br from-black via-gray-950 to-black border-violet-600 hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.6)]"
+                  : "bg-white border-green-400 hover:border-blue-400 hover:shadow-[0_0_15px_rgba(34,197,94,0.5)]"
+              }`}
             >
               <h2 className="text-xl font-semibold mb-2">{project.title}</h2>
-              <p className="text-sm text-gray-400 mb-4 line-clamp-2">
+              <p
+                className={`text-sm mb-4 line-clamp-2 ${
+                  darkMode ? "text-gray-400" : "text-gray-700"
+                }`}
+              >
                 {project.description}
               </p>
               <div className="flex flex-wrap gap-2 mb-4">
                 {project.tech.map((tech, i) => (
                   <span
                     key={i}
-                    className="text-xs bg-gray-700 px-2 py-1 rounded-md"
+                    className={`text-xs px-2 py-1 rounded-md ${
+                      darkMode ? "bg-gray-700" : "bg-green-100 text-green-700"
+                    }`}
                   >
                     {tech}
                   </span>
@@ -91,7 +118,9 @@ const Projects = () => {
       <AnimatePresence>
         {selectedProject && (
           <motion.div
-            className="fixed inset-0 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center z-50 px-4"
+            className={`fixed inset-0 backdrop-blur-sm flex flex-col items-center justify-center z-50 px-4 ${
+              darkMode ? "bg-black/90" : "bg-white/90"
+            }`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -99,7 +128,11 @@ const Projects = () => {
             {/* Close Button */}
             <button
               onClick={() => setSelectedProject(null)}
-              className="absolute top-5 right-5 text-gray-300 hover:text-white text-3xl"
+              className={`absolute top-5 right-5 text-3xl ${
+                darkMode
+                  ? "text-gray-300 hover:text-white"
+                  : "text-gray-700 hover:text-black"
+              }`}
             >
               ✕
             </button>
@@ -149,7 +182,11 @@ const Projects = () => {
             </div>
 
             {/* Description */}
-            <p className="text-gray-400 text-center mb-4 px-4">
+            <p
+              className={`text-center mb-4 px-4 ${
+                darkMode ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
               {selectedProject.description}
             </p>
 
@@ -158,7 +195,9 @@ const Projects = () => {
               {selectedProject.tech.map((tech, i) => (
                 <span
                   key={i}
-                  className="text-xs bg-gray-700 px-2 py-1 rounded-md"
+                  className={`text-xs px-2 py-1 rounded-md ${
+                    darkMode ? "bg-gray-700" : "bg-green-100 text-green-700"
+                  }`}
                 >
                   {tech}
                 </span>
@@ -172,7 +211,9 @@ const Projects = () => {
                   href={selectedProject.demo}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-400 hover:underline"
+                  className={`hover:underline ${
+                    darkMode ? "text-blue-400" : "text-green-600"
+                  }`}
                 >
                   Live Demo
                 </a>
@@ -181,7 +222,9 @@ const Projects = () => {
                 href={selectedProject.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-violet-400 hover:underline"
+                className={`hover:underline ${
+                  darkMode ? "text-violet-400" : "text-blue-600"
+                }`}
               >
                 GitHub
               </a>

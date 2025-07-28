@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { FaMoon, FaSun } from "react-icons/fa";
+import { FaMoon, FaSun, FaBars, FaTimes } from "react-icons/fa";
 import { useTheme } from "./ThemeContext";
 
 function Navbar() {
   const { darkMode, setDarkMode } = useTheme(); // Global theme state
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const menuItems = [
     { name: "Home", link: "/" },
@@ -23,20 +24,20 @@ function Navbar() {
           : "bg-white/70 backdrop-blur-lg shadow-sm shadow-gray-300"
       }`}
     >
-      <div className="container my-2 flex justify-between items-center px-4">
+      <div className="container mx-auto flex justify-between items-center px-4 py-3">
         {/* Logo */}
         <h1
-          className={`text-3xl font-extrabold bg-clip-text text-transparent ${
+          className={`text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent ${
             darkMode
               ? "bg-gradient-to-r from-violet-200 to-blue-200"
-              : "bg-gradient-to-r from-violet-500 to-blue-500"
+              : "bg-gradient-to-r from-green-500 to-blue-500"
           }`}
         >
           Ketan Tripathi
         </h1>
 
-        {/* Menu Items */}
-        <div className="floated-navbar flex justify-center flex-grow">
+        {/* Desktop Menu */}
+        <div className="hidden md:flex flex-grow justify-center">
           <ul
             className={`flex rounded-full shadow-lg border px-2 py-1 transition-all ${
               darkMode
@@ -52,7 +53,7 @@ function Navbar() {
                 initial={{ opacity: 1, x: 0 }}
                 animate={
                   hoveredIndex !== null && hoveredIndex !== index
-                    ? { opacity: 0, x: 20 }
+                    ? { opacity: 0.5, x: 10 }
                     : { opacity: 1, x: 0 }
                 }
                 transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -69,20 +70,73 @@ function Navbar() {
           </ul>
         </div>
 
-        {/* Dark/Light Toggle */}
-        <motion.button
-          onClick={() => setDarkMode(!darkMode)}
-          whileTap={{ scale: 0.9 }}
-          className={`ml-4 w-10 h-10 flex items-center justify-center rounded-full shadow-md hover:shadow-lg transition
-            ${
-              darkMode
-                ? "bg-gradient-to-r from-violet-500 to-blue-500 text-white"
-                : "bg-gradient-to-r from-green-400 to-blue-400 text-white text-shadow-black shadow-sm "
-            }`}
-        >
-          {darkMode ? <FaSun size={18} /> : <FaMoon size={18} />}
-        </motion.button>
+        {/* Right Section */}
+        <div className="flex items-center gap-3">
+          {/* Dark/Light Toggle */}
+          <motion.button
+            onClick={() => setDarkMode(!darkMode)}
+            whileTap={{ scale: 0.9 }}
+            className={`w-10 h-10 flex items-center justify-center rounded-full shadow-md hover:shadow-lg transition
+              ${
+                darkMode
+                  ? "bg-gradient-to-r from-violet-500 to-blue-500 text-white"
+                  : "bg-gradient-to-r from-green-400 to-blue-400 text-white"
+              }`}
+          >
+            {darkMode ? <FaSun size={18} /> : <FaMoon size={18} />}
+          </motion.button>
+
+          {/* Mobile Hamburger Button */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden p-2 focus:outline-none"
+          >
+            {menuOpen ? (
+              <FaTimes
+                className={`text-2xl ${
+                  darkMode ? "text-white" : "text-gray-800"
+                }`}
+              />
+            ) : (
+              <FaBars
+                className={`text-2xl ${
+                  darkMode ? "text-white" : "text-gray-800"
+                }`}
+              />
+            )}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Menu (Slide In) */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className={`md:hidden flex flex-col items-center space-y-4 py-6 border-t transition-colors ${
+              darkMode ? "bg-black border-white/20" : "bg-white border-gray-200"
+            }`}
+          >
+            {menuItems.map((item) => (
+              <Link
+                key={item.name}
+                to={item.link}
+                onClick={() => setMenuOpen(false)}
+                className={`text-lg font-medium transition ${
+                  darkMode
+                    ? "text-white hover:text-violet-400"
+                    : "text-gray-800 hover:text-green-500"
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
