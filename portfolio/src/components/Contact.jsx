@@ -27,35 +27,24 @@ const Contact = () => {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  // Submit form to backend API
-  const handleSubmit = async (e) => {
+  // Fake submit handler
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setStatus("Sending...");
 
-    try {
-      const response = await fetch("http://localhost:5000/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+    // Show thank you message
+    setStatus("Thank you! Your message has been received.");
 
-      if (response.ok) {
-        setStatus("Message sent successfully!");
-        setFormData({ name: "", email: "", mobile: "", message: "" });
-      } else {
-        setStatus("Failed to send message. Try again later.");
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      setStatus("Error occurred. Please try again.");
-    }
+    // Clear form fields
+    setFormData({ name: "", email: "", mobile: "", message: "" });
+
+    // Optionally clear the message after few seconds
+    setTimeout(() => setStatus(""), 4000);
   };
 
   return (
     <div
-      className={`relative w-full py-16 px-6 md:px-20 overflow-hidden transition-colors duration-500 ${
+      id="contact"
+      className={`contact relative w-full py-16 px-6 md:px-20 overflow-hidden transition-colors duration-500 ${
         darkMode
           ? "bg-black text-white"
           : "bg-gradient-to-b from-green-50 to-white text-gray-900"
@@ -184,7 +173,7 @@ const Contact = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             type="submit"
-            className={`mt-2 p-3 rounded-xl font-bold transition-all duration-300 border-2 ${
+            className={`mt-2 p-3 cursor-pointer rounded-xl font-bold transition-all duration-300 border-2 ${
               darkMode
                 ? "border-violet-600 hover:border-blue-600"
                 : "border-green-500 hover:border-blue-500"
@@ -194,7 +183,7 @@ const Contact = () => {
           </motion.button>
 
           {/* Status Message */}
-          {status && <p className="text-sm mt-2">{status}</p>}
+          {status && <p className="text-sm mt-2 text-green-500">{status}</p>}
         </motion.form>
 
         {/* Contact Info */}
@@ -258,10 +247,10 @@ const Contact = () => {
           <div className="flex items-center gap-3 mt-4">
             <FaFilePdf className="text-red-400" size={22} />
             <a
-              href="/resume.pdf"
+              href="./Off-campus_Resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className={`px-4 py-2 rounded-lg font-semibold border-2 transition-all ${
+              className={`px-4 cursor-pointer py-2 rounded-lg font-semibold border-2 transition-all ${
                 darkMode
                   ? "border-white hover:border-violet-600"
                   : "border-green-500 hover:border-blue-500"

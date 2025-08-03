@@ -1,37 +1,53 @@
-// src/pages/Projects.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import projectsData from "../data/projectsData";
 import { useTheme } from "../components/ThemeContext"; // Import Theme Context
-
-const categories = ["All", "Web Development", "UI/UX", "Machine Learning", "Logo Design"];
 
 const Projects = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedProject, setSelectedProject] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showAll, setShowAll] = useState(false); // View More toggle
 
-  const { darkMode } = useTheme(); // Access global darkMode
+  const { darkMode } = useTheme();
 
   // Auto-slide effect for carousel
   useEffect(() => {
     if (!selectedProject) return;
     const interval = setInterval(() => {
-      setCurrentImageIndex((prev) =>
-        (prev + 1) % selectedProject.images.length
+      setCurrentImageIndex(
+        (prev) => (prev + 1) % selectedProject.images.length
       );
-    }, 3000); // 3 seconds
+    }, 3000);
     return () => clearInterval(interval);
   }, [selectedProject]);
 
+  // --- Generate unique categories dynamically ---
+  const categories = useMemo(() => {
+    const allCategories = projectsData.flatMap((proj) =>
+      Array.isArray(proj.category) ? proj.category : [proj.category]
+    );
+    return ["All", ...new Set(allCategories)];
+  }, []);
+
+  // --- Filtered projects logic ---
   const filteredProjects =
     selectedCategory === "All"
       ? projectsData
-      : projectsData.filter((proj) => proj.category === selectedCategory);
+      : projectsData.filter((proj) =>
+          Array.isArray(proj.category)
+            ? proj.category.includes(selectedCategory)
+            : proj.category === selectedCategory
+        );
+
+  // Limit to 6 unless View More clicked
+  const displayedProjects = showAll
+    ? filteredProjects
+    : filteredProjects.slice(0, 6);
 
   return (
     <div
-      className={`min-h-screen py-16 px-6 md:px-20 transition-colors duration-500 ${
+      className={`min-h-screen py-16 pt-20 px-6 md:px-20 transition-colors duration-500 ${
         darkMode ? "bg-black text-white" : "bg-green-50 text-gray-900"
       }`}
     >
@@ -46,14 +62,17 @@ const Projects = () => {
         My Projects
       </h1>
 
-      {/* Category Buttons */}
+      {/* Category Buttons (Dynamic) */}
       <div className="flex justify-center gap-4 mb-12 flex-wrap">
         {categories.map((cat) => (
           <motion.button
             key={cat}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setSelectedCategory(cat)}
+            onClick={() => {
+              setSelectedCategory(cat);
+              setShowAll(false); // Reset View More when switching category
+            }}
             className={`px-4 py-2 rounded-full border transition-colors duration-300 ${
               selectedCategory === cat
                 ? darkMode
@@ -72,7 +91,7 @@ const Projects = () => {
       {/* Project Cards */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
         <AnimatePresence>
-          {filteredProjects.map((project, index) => (
+          {displayedProjects.map((project, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
@@ -81,9 +100,9 @@ const Projects = () => {
               transition={{ duration: 0.3 }}
               onClick={() => {
                 setSelectedProject(project);
-                setCurrentImageIndex(0); // reset carousel
+                setCurrentImageIndex(0);
               }}
-              className={`cursor-pointer p-5 rounded-2xl shadow-lg border transition-shadow ${
+              className={`p-5 cursor-pointer rounded-2xl shadow-lg border transition-shadow ${
                 darkMode
                   ? "bg-gradient-to-br from-black via-gray-950 to-black border-violet-600 hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.6)]"
                   : "bg-white border-green-400 hover:border-blue-400 hover:shadow-[0_0_15px_rgba(34,197,94,0.5)]"
@@ -113,6 +132,22 @@ const Projects = () => {
           ))}
         </AnimatePresence>
       </div>
+
+      {/* View More Button */}
+      {filteredProjects.length > 6 && (
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={() => setShowAll((prev) => !prev)}
+            className={`px-6 py-2 rounded-full font-medium transition-colors ${
+              darkMode
+                ? "bg-gradient-to-r from-violet-500 to-blue-500 text-white"
+                : "bg-gradient-to-r from-green-400 to-blue-400 text-white"
+            }`}
+          >
+            {showAll ? "View Less" : "View More"}
+          </button>
+        </div>
+      )}
 
       {/* Fullscreen Modal */}
       <AnimatePresence>

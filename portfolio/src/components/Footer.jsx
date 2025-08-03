@@ -70,7 +70,7 @@ const Footer = () => {
             rel="noopener noreferrer"
             whileHover={{ scale: 1.2, rotate: 10 }}
             whileTap={{ scale: 0.9 }}
-            className={`text-2xl transition-colors ${link.color}`}
+            className={`text-2xl cursor-none transition-colors ${link.color}`}
           >
             {link.icon}
           </motion.a>
@@ -92,7 +92,7 @@ const Footer = () => {
         © {new Date().getFullYear()}{" "}
         <span
           onClick={() => navigate("/login")}
-          className={`cursor-pointer bg-clip-text text-transparent hover:underline ${
+          className={` bg-clip-text text-transparent hover:underline ${
             darkMode
               ? "bg-gradient-to-r from-violet-400 to-blue-400"
               : "bg-gradient-to-r from-green-500 to-blue-500"

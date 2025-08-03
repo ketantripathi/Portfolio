@@ -6,7 +6,7 @@ const About = () => {
   const { darkMode } = useTheme(); // Access global theme
 
   return (
-    <div
+    <div id="about"
       className={`relative w-full py-16 px-6 md:px-20 transition-colors duration-500 overflow-hidden ${
         darkMode ? "bg-black text-white" : "bg-green-50 text-gray-900"
       }`}

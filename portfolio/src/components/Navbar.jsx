@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+// eslint-disable-next-line
+import { Link, useNavigate } from "react-router-dom";
 import { FaMoon, FaSun, FaBars, FaTimes } from "react-icons/fa";
 import { useTheme } from "./ThemeContext";
 
@@ -8,12 +9,27 @@ function Navbar() {
   const { darkMode, setDarkMode } = useTheme(); // Global theme state
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
+  // Smooth scroll function
+  const scrollToSection = (id) => {
+    if (window.location.pathname === "/") {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate("/");
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+    setMenuOpen(false); // close mobile menu after click
+  };
+
+  // Menu items with actions
   const menuItems = [
-    { name: "Home", link: "/" },
-    { name: "About Me", link: "/about" },
-    { name: "Projects", link: "/projects" },
-    { name: "Contact Me", link: "/contact" },
+    { name: "Home", onClick: () => navigate("/") },
+    { name: "About Me", onClick: () => scrollToSection("about") },
+    { name: "Projects", onClick: () => navigate("/projects") },
+    { name: "Contact Me", onClick: () => scrollToSection("contact") },
   ];
 
   return (
@@ -27,6 +43,7 @@ function Navbar() {
       <div className="container mx-auto flex justify-between items-center px-4 py-3">
         {/* Logo */}
         <h1
+          onClick={() => navigate("/")}
           className={`text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent ${
             darkMode
               ? "bg-gradient-to-r from-violet-200 to-blue-200"
@@ -57,14 +74,14 @@ function Navbar() {
                     : { opacity: 1, x: 0 }
                 }
                 transition={{ duration: 0.3, ease: "easeInOut" }}
-                className={`font-medium px-4 py-2 m-1 rounded-full transition-all duration-300 
+                className={`cursor-none font-medium px-4 py-2 m-1 rounded-full transition-all duration-300 
                   ${
                     darkMode
                       ? "text-white hover:bg-gradient-to-r hover:from-violet-500/50 hover:to-blue-500/50 hover:border-white/40 hover:shadow-[0_0_10px_rgba(139,92,246,0.5)]"
                       : "text-gray-800 hover:bg-gradient-to-r hover:from-green-300 hover:to-blue-300 hover:text-white hover:shadow-md"
                   }`}
               >
-                <Link to={item.link}>{item.name}</Link>
+                <button onClick={item.onClick} className="cursor-none">{item.name}</button>
               </motion.li>
             ))}
           </ul>
@@ -93,15 +110,11 @@ function Navbar() {
           >
             {menuOpen ? (
               <FaTimes
-                className={`text-2xl ${
-                  darkMode ? "text-white" : "text-gray-800"
-                }`}
+                className={`text-2xl ${darkMode ? "text-white" : "text-gray-800"}`}
               />
             ) : (
               <FaBars
-                className={`text-2xl ${
-                  darkMode ? "text-white" : "text-gray-800"
-                }`}
+                className={`text-2xl ${darkMode ? "text-white" : "text-gray-800"}`}
               />
             )}
           </button>
@@ -121,10 +134,9 @@ function Navbar() {
             }`}
           >
             {menuItems.map((item) => (
-              <Link
+              <button
                 key={item.name}
-                to={item.link}
-                onClick={() => setMenuOpen(false)}
+                onClick={item.onClick}
                 className={`text-lg font-medium transition ${
                   darkMode
                     ? "text-white hover:text-violet-400"
@@ -132,7 +144,7 @@ function Navbar() {
                 }`}
               >
                 {item.name}
-              </Link>
+              </button>
             ))}
           </motion.div>
         )}
