@@ -4,7 +4,7 @@ import html from "../assets/html5.svg";
 import css from "../assets/css3.svg";
 import js from "../assets/javascript.svg";
 import mongo from "../assets/mongodb.svg";
-import exp from "../assets/express.svg";
+import exp from "../assets/expressjs.svg";
 import reactLogo from "../assets/react.svg";
 import node from "../assets/node-js.svg";
 import figma from "../assets/figma.svg";
@@ -22,7 +22,7 @@ const Skill = () => {
     {
       category: "Languages",
       items: [
-        { name: "HTML", percent: 90, icon: html },
+        { name: "HTML", percent: 95, icon: html },
         { name: "CSS", percent: 90, icon: css },
         { name: "JavaScript", percent: 80, icon: js },
       ],
@@ -31,16 +31,16 @@ const Skill = () => {
       category: "Tools",
       items: [
         { name: "MongoDB", percent: 70, icon: mongo },
-        { name: "ExpressJS", percent: 70, icon: exp },
-        { name: "React JS", percent: 70, icon: reactLogo },
-        { name: "Node JS", percent: 70, icon: node },
+        { name: "ExpressJS", percent: 80, icon: exp },
+        { name: "React JS", percent: 75, icon: reactLogo },
+        { name: "Node JS", percent: 65, icon: node },
       ],
     },
     {
       category: "Design",
       items: [
-        { name: "Figma", percent: 70, icon: figma },
-        { name: "Illustrator", percent: 70, icon: illustrator },
+        { name: "Figma", percent: 60, icon: figma },
+        { name: "Illustrator", percent: 50, icon: illustrator },
       ],
     },
   ];
